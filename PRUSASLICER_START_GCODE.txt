@@ -1,0 +1,78 @@
+###############################################################################
+# PRUSASLICER START GCODE - Optimiert für KAMP
+# Für Sovol SV06 Plus mit Klipper
+#
+# INSTALLATION:
+# 1. Öffne PrusaSlicer
+# 2. Printer Settings > Custom G-code > Start G-code
+# 3. Ersetze den bestehenden Code mit dem unten stehenden
+# 4. Speichern
+#
+###############################################################################
+
+; ===== PrusaSlicer Start G-Code für Klipper mit KAMP =====
+; Setze Variablen aus PrusaSlicer
+M104 S0 ; Hotend aus (wird von PRINT_START gesteuert)
+M140 S0 ; Bett aus (wird von PRINT_START gesteuert)
+
+; PRINT_START Makro mit Temperaturen
+PRINT_START BED=[first_layer_bed_temperature] HOTEND=[first_layer_temperature]
+
+; KAMP Adaptive Purge (ersetzt PURGE_LINE)
+; Wenn KAMP aktiviert ist (kamp_enable: 1), wird LINE_PURGE eine adaptive Linie zeichnen
+LINE_PURGE
+
+; Optional: Smart Park vor dem Purge aktivieren (erfordert Smart_Park.cfg)
+; Entferne das Semikolon vor SMART_PARK um es zu aktivieren:
+; SMART_PARK
+
+; Bereit zum Drucken
+M117 Printing...
+
+; ===== Ende Start G-Code =====
+
+###############################################################################
+# ALTERNATIVE: Mit Voron-Style Purge statt Line Purge
+# Falls du das Voron-Logo purgen möchtest, ersetze LINE_PURGE mit:
+# VORON_PURGE
+#
+# Vergiss nicht in KAMP_Settings.cfg die entsprechende Config zu aktivieren!
+###############################################################################
+
+###############################################################################
+# PRUSA SLICER VOLUMETRIC SPEED EINSTELLUNG:
+#
+# Nach dem Flow-Test:
+# 1. Print Settings > Advanced > Max volumetric speed
+# 2. Setze auf 80% deines ermittelten Maximums
+#
+# Beispiel:
+# - Gemessenes Maximum: 12 mm³/s
+# - Setze: 12 × 0.8 = 9.6 mm³/s
+#
+# Dies verhindert automatisch zu schnelle Moves bei dünnen Wänden!
+###############################################################################
+
+###############################################################################
+# WICHTIG: EXCLUDE_OBJECT für KAMP
+#
+# Damit KAMP funktioniert, muss PrusaSlicer "Label Objects" aktivieren:
+#
+# 1. Print Settings > Output options
+# 2. Aktiviere: "Label objects"
+# 3. In Klipper muss [exclude_object] aktiviert sein (bereits in deiner Config!)
+#
+# Dann kann KAMP die Objektgrenzen aus dem G-Code lesen und:
+# - Nur den Druckbereich meshen
+# - Purge-Line direkt vor dem Objekt platzieren
+###############################################################################
+
+###############################################################################
+# END GCODE - Zum Vervollständigen:
+#
+# Printer Settings > Custom G-code > End G-code:
+#
+# PRINT_END
+# M117 Print Complete!
+#
+###############################################################################
